@@ -127,4 +127,18 @@ export const updateClinic = async (req, res) => {
     });
     res.status(400).json({ message: error.message });
   }
+}
+
+export const obtainAllClinics = async (req, res) => {
+  try {
+    const clinics = await Clinic.find(); // Encuentra todos los pacientes
+    res.status(200).json(clinics);
+  } catch (error) {
+    logger.error('Error fetching clinics', {
+      method: req.method,
+      url: req.originalUrl,
+      error: error
+    });
+    res.status(500).json({ message: error.message });
+  }
 };
