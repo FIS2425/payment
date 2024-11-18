@@ -1,11 +1,18 @@
 import express from 'express';
-import { register,obtainAll,deleteClinic} from '../controllers/clinicController.js';
-
+import { 
+  registerClinic,
+  obtainAllClinics,
+  deleteClinic,
+  getclinicById,
+  updateClinic 
+} from '../controllers/clinicController.js';
 
 const router = express.Router();
 
-router.post('/register', register);
-router.get('/obtainAll', obtainAll);
+router.post('/registerClinic', registerClinic);
+router.get('/obtainAllClinic', obtainAllClinics);
 router.delete('/deleteClinic/:id', deleteClinic);
+router.get('/getclinicById/:id', getclinicById);
+router.put('/updateClinic/:id', updateClinic);
 
 export default router;

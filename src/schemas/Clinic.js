@@ -22,7 +22,7 @@ const clinicSchema = new mongoose.Schema({
     required: true
   },
   district: {
-    type: Date,
+    type: String,
     required: true
   },
   plan: {
