@@ -141,4 +141,66 @@ export const obtainAllClinics = async (req, res) => {
     });
     res.status(500).json({ message: error.message });
   }
+}
+export const deleteClinic = async (req, res) => {
+
+  try {
+    const { id } = req.params;
+    const clinic = await Clinic.findById(id);
+    if (!clinic) {
+      logger.error('Clinic not found', {
+        method: req.method,
+        url: req.originalUrl
+      });
+      res.status(404).json({ message: 'clinics not found' });
+    } else {
+      try {
+        await clinic.deleteOne();
+        logger.info(`Clinic ${clinic._id} deleted from database`);
+        res.status(204).json({ message: 'Clinic deleted' });
+      } catch (error) {
+        logger.error('Error deleting clinics', {
+          method: req.method,
+          url: req.originalUrl,
+          error: error
+        });
+      }
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+export const deactivateClinic = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const clinic = await Clinic.findById(id);
+    
+    if (!clinic) {
+      logger.error('Clinic not found', {
+        method: req.method,
+        url: req.originalUrl,
+        patientId: id,
+      });
+      return res.status(404).json({ message: 'Clinic not found' });
+    }
+    
+    clinic.active = false;
+
+    await clinic.save();
+
+    logger.info(`Clinic ${clinic._id} updated successfully`, {
+      method: req.method,
+      url: req.originalUrl,
+    });
+
+    res.status(200).json(clinic);
+
+  } catch (error) {
+    logger.error('Error updating clinic', {
+      method: req.method,
+      url: req.originalUrl,
+      error: error.message,
+    });
+    res.status(400).json({ message: error.message });
+  }
 };
