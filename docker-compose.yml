@@ -30,7 +30,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - .:/template
+      - .:/payment-svc
 
 volumes:
   mongo-data:

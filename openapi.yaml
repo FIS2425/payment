@@ -8,7 +8,159 @@ servers:
   - url: http://localhost:3001
 
 paths:
-  # Aquí irán tus rutas
+  /register:
+    post:
+      summary: Registrar una nueva clínica
+      description: Crea una nueva clínica en la base de datos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Clínica San Juan"
+                city:
+                  type: string
+                  example: "Barcelona"
+                district:
+                  type: string
+                  format: date-time
+                  example: "2023-11-14T00:00:00.000Z"
+                plan:
+                  type: string
+                  example: "Premium"
+                active:
+                  type: boolean
+                  example: true
+                postalCode:
+                  type: string
+                  example: "08001"
+                countryCode:
+                  type: string
+                  example: "ES"
+              required:
+                - name
+                - city
+                - district
+                - plan
+                - active
+                - postalCode
+                - countryCode
+      responses:
+        '201':
+          description: Clínica creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clinic'
+        '400':
+          description: Error de validación de los datos de la clínica
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Clinic validation failed: name: Path `name` is required., city: Path `city` is required., district: Path `district` is required., plan: Path `plan` is required., active: Path `active` is required., postalCode: Path `postalCode` is required., countryCode: Path `countryCode` is required."
+
+  /obtainAll:
+    get:
+      summary: Obtener todas las clínicas
+      description: Retorna una lista de todas las clínicas registradas.
+      responses:
+        '200':
+          description: Lista de clínicas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Clinic'
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error al obtener las clínicas"
+
+  /deleteClinic/{id}:
+    delete:
+      summary: Eliminar una clínica
+      description: Elimina una clínica basada en su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de la clínica a eliminar
+      responses:
+        '200':
+          description: Clínica eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Clínica eliminada con éxito"
+        '404':
+          description: Clínica no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Clínica no encontrada"
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Error al eliminar la clínica"
 
 components:
-  # Aquí irán tus componentes reutilizables
+  schemas:
+    Clinic:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+          format: date-time
+        plan:
+          type: string
+        active:
+          type: boolean
+        postalCode:
+          type: string
+        countryCode:
+          type: string
+          description: Código de país en formato ISO 3166-1 Alpha-2
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
