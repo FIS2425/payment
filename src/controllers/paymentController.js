@@ -33,3 +33,31 @@ export const registerPayment = async (req, res) => {
   }
 }
 
+export const deletePayment = async (req, res) => {
+
+  try {
+    const { id } = req.params;
+    const payment = await Payment.findById(id);
+    if (!payment) {
+      logger.error('Payment not found', {
+        method: req.method,
+        url: req.originalUrl
+      });
+      res.status(404).json({ message: 'Payments not found' });
+    } else {
+      try {
+        await payment.deleteOne();
+        logger.info(`Payment ${payment._id} deleted from database`);
+        res.status(204).json({ message: 'Payment deleted' });
+      } catch (error) {
+        logger.error('Error deleting payments', {
+          method: req.method,
+          url: req.originalUrl,
+          error: error
+        });
+      }
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
