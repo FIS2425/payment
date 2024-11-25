@@ -1,11 +1,16 @@
 import express from 'express';
-import { registerPayment,obtainAllPayments,deletePayment,getPaymentById} from '../controllers/paymentController.js';
+import { registerPayment,
+  obtainAllPayments,
+  deletePayment,
+  getPaymentById,
+  processPayment
+} from '../controllers/paymentController.js';
 import { 
   registerClinic,
   obtainAllClinics,
   deleteClinic,
   getclinicById,
-  updateClinic 
+  updateClinic
 } from '../controllers/clinicController.js';
 
 const router = express.Router();
@@ -19,5 +24,6 @@ router.get('/obtainAllClinic', obtainAllClinics);
 router.delete('/deleteClinic/:id', deleteClinic);
 router.get('/getclinicById/:id', getclinicById);
 router.put('/updateClinic/:id', updateClinic);
+router.post('/payment', processPayment);
 
 export default router;

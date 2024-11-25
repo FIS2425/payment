@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
-import Patient from '../src/schemas/Clinic.js';
+import dotenv from 'dotenv';
+import Clinic from '../src/schemas/Clinic.js'; // Ajusta la ruta si es necesario
+
+dotenv.config();
 
 const MONGO_URI = process.env.MONGOURL;
 
@@ -15,39 +17,37 @@ const connectToDatabase = async () => {
     });
 };
 
-// Sample Patient data
-const sample = [
-  
+// Datos de ejemplo para las clínicas
+const sampleClinics = [
   {
-    name: 'Clínica Salud',
-    city: 'Madrid',
-    district: new Date('2023-11-10T00:00:00.000Z'),
-    plan: 'Plan Básico',
+    name: "Clinic One",
+    city: "City One",
+    district: "District One",
+    plan: "Plan One",
     active: true,
-    postalCode: '28001',
-    countryCode: 'ES', // Código ISO 3166-1 Alpha-2 válido
-  }
+  },
+  // Agrega más clínicas si es necesario
 ];
 
-async function populatePatients() {
+async function populateClinics() {
   try {
-    // Save each Patient
-    for (const apptData of sample) {
-      const pacientes = new Patient(apptData);
-      await pacientes.save();
-      console.log('Patient created successfully');
+    // Guardar cada clínica
+    for (const clinicData of sampleClinics) {
+      const clinic = new Clinic(clinicData);
+      await clinic.save();
+      console.log('Clinic created successfully');
     }
 
-    console.log('All sample Patients have been created');
+    console.log('All sample clinics have been created');
   } catch (error) {
-    console.error('Error populating Patients:', error);
+    console.error('Error populating clinics:', error);
   } finally {
     mongoose.disconnect();
   }
 }
 
-// Run the script
+// Ejecutar el script
 (async () => {
   await connectToDatabase();
-  await populatePatients();
+  await populateClinics();
 })();
