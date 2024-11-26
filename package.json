@@ -55,6 +55,7 @@
     "kafka-node": "5.0.0",
     "mongoose": "8.7.3",
     "npm": "10.9.0",
+    "opossum": "8.3.1",
     "stripe": "17.3.1",
     "swagger-ui-express": "5.0.1",
     "uuid": "11.0.3",
