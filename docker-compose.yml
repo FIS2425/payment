@@ -26,7 +26,7 @@ services:
     networks:
       - backend
     ports:
-      - "3001:3001"
+      - "3003:3003"
 
 volumes:
   mongo-data:
