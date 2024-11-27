@@ -227,7 +227,7 @@ paths:
         400:
           description: Invalid input data
 
-  /obtainAllClinics:
+  /obtainAllClinic:
     get:
       summary: Retrieve all clinics
       description: Returns a list of all registered clinics.

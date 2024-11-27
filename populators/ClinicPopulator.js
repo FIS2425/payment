@@ -20,10 +20,12 @@ const connectToDatabase = async () => {
 // Datos de ejemplo para las clínicas
 const sampleClinics = [
   {
-    name: "Clinic One",
-    city: "City One",
-    district: "District One",
-    plan: "Plan One",
+    name: "Clinic Two",
+    city: "City Two",
+    district: "District Two",
+    plan: "Plan Two",
+    postalCode:"18015",
+    countryCode: "US",
     active: true,
   },
   // Agrega más clínicas si es necesario
