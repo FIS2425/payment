@@ -53,13 +53,13 @@
     "express": "4.21.1",
     "install": "0.13.0",
     "kafka-node": "5.0.0",
-    "mongoose": "8.7.3",
+    "mongoose": "8.8.3",
     "npm": "10.9.0",
-    "opossum": "8.3.1",
-    "stripe": "17.3.1",
+    "opossum": "8.4.0",
+    "stripe": "17.4.0",
     "swagger-ui-express": "5.0.1",
     "uuid": "11.0.3",
-    "winston": "3.16.0",
+    "winston": "3.17.0",
     "yamljs": "0.3.0"
   }
 }
