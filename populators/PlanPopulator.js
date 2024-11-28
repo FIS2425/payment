@@ -19,44 +19,44 @@ const connectToDatabase = async () => {
 
 const samplePlans = [
   {
-    name: "Basic",
+    name: 'Basic',
     price: 0,
     features: [
-      "1 clinic",
-      "Max File Size: 0.5 GB",
-      "2 doctors per clinic",
-      "350 patients per clinic",
-      "Clinical History Format: PDF",
+      '1 clinic',
+      'Max File Size: 0.5 GB',
+      '2 doctors per clinic',
+      '350 patients per clinic',
+      'Clinical History Format: PDF',
     ],
   }, {
-    name: "Advanced",
+    name: 'Advanced',
     price: 5,
     features: [
-      "3 clinics",
-      "Max File Size: 1 GB",
-      "15 doctors per clinic",
-      "1000 patients per clinic",
-      "Clinical History Format: CSV, XML, JSON",
+      '3 clinics',
+      'Max File Size: 1 GB',
+      '15 doctors per clinic',
+      '1000 patients per clinic',
+      'Clinical History Format: CSV, XML, JSON',
     ],
   }, {
-    name: "Professional",
+    name: 'Professional',
     price: 10,
     features: [
-      "6 clinics",
-      "Max File Size: 10 GB",
-      "35 doctors per clinic",
-      "5000 patients per clinic",
-      "Clinical History Format: DICOM, HL7, FHIR",
+      '6 clinics',
+      'Max File Size: 10 GB',
+      '35 doctors per clinic',
+      '5000 patients per clinic',
+      'Clinical History Format: DICOM, HL7, FHIR',
     ],
   }, {
-    name: "Enterprise",
+    name: 'Enterprise',
     price: 1000,
     features: [
-      "Unlimited clinics",
-      "Unlimited File Size",
-      "Unlimited doctors per clinic",
-      "Unlimited patients per clinic",
-      "Clinical History Format: All Supported Formats",
+      'Unlimited clinics',
+      'Unlimited File Size',
+      'Unlimited doctors per clinic',
+      'Unlimited patients per clinic',
+      'Clinical History Format: All Supported Formats',
     ],
   }];
 
