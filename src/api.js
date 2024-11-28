@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import paymentRoute from './routes/paymentRoute.js';
 import plansRoute from './routes/planRoute.js';
 import clinicRoute from './routes/clinicRoute.js';
+import { paymentPermissions } from './middleware/verifyAuth.js';
 
 const swaggerDocument = YAML.load('./openapi.yaml');
 
@@ -17,7 +18,7 @@ export default function () {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
-  app.use(`${process.env.API_PREFIX || ''}/payments` ,paymentRoute);
+  app.use(`${process.env.API_PREFIX || ''}/payments` , paymentPermissions, paymentRoute);
   app.use(`${process.env.API_PREFIX || ''}/plans`, plansRoute);
   app.use(`${process.env.API_PREFIX || ''}/clinics`, clinicRoute);
   app.get('/', (req, res) => {
