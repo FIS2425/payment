@@ -28,7 +28,17 @@ export const registerClinic = async (req, res) => {
   try {
     const { name, city, district, plan, active, postalCode, countryCode } = req.body;
 
-    const clinicData = {
+    if (!name || !city || !district || !plan || active === undefined || !postalCode || !countryCode) {
+      logger.error('Missing fields', {
+        method: req.method,
+        url: req.originalUrl,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null,
+      });
+      return res.status(400).json({ message: 'Missing fields' });
+    }
+
+    const clinic = new Clinic({
       name,
       city,
       district,
@@ -36,28 +46,26 @@ export const registerClinic = async (req, res) => {
       active,
       postalCode,
       countryCode,
-    };
+    });
 
-    try {
-      // Usar Circuit Breaker para la operación de guardar
-      const clinic = await circuitBreaker.fire(() => {
-        const newClinic = new Clinic(clinicData);
-        return newClinic.save();
-      });
-
-      logger.info(`Clinic ${clinic._id} created`);
-      res.status(201).json(clinic);
-    } catch (error) {
-      logger.error('Failed to create clinic', {
-        method: req.method,
-        url: req.originalUrl,
-        error: error.message,
-      });
-
-      res.status(400).json({ message: error.message });
-    }
+    const clinicSaved = await clinic.save();
+    logger.info(`Clinic ${clinicSaved._id} created`, {
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
+      clinicId: clinicSaved._id,
+    });
+    res.status(201).json(clinic);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    logger.error('Failed to create clinic', {
+      method: req.method,
+      url: req.originalUrl,
+      error: error,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null
+    });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -65,195 +73,152 @@ export const registerClinic = async (req, res) => {
 export const getclinicById = async (req, res) => {
   try {
     const { id } = req.params;
-
-    try {
-      // Usar Circuit Breaker para buscar la clínica
-      const clinic = await circuitBreaker.fire(() => Clinic.findById(id));
-
-      if (!clinic) {
-        return res.status(404).json({ message: 'Clinic not found' });
-      }
-
-      logger.info(`Clinic ${clinic._id} retrieved`);
-      res.status(200).json(clinic);
-    } catch (error) {
-      logger.error('Error retrieving clinic', {
+    if(!id) {
+      logger.error('Missing clinic ID', {
         method: req.method,
         url: req.originalUrl,
-        error: error.message,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null,
       });
-
-      res.status(500).json({ message: 'An error occurred while retrieving the clinic' });
+      return res.status(400).json({ message: 'Missing clinic ID' });
     }
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-
-export const updateClinic = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, city, district, plan, active, postalCode, countryCode } = req.body;
-
-    try {
-      // Usar Circuit Breaker para encontrar la clínica
-      const clinic = await circuitBreaker.fire(() => Clinic.findById(id));
-
-      if (!clinic) {
-        logger.error('Clinic not found', {
-          method: req.method,
-          url: req.originalUrl,
-          patientId: id,
-        });
-        return res.status(404).json({ message: 'Clinic not found' });
-      }
-
-      // Validaciones de los campos
-      if (name && typeof name !== 'string') {
-        return res.status(400).json({ message: 'Invalid name format' });
-      }
-      if (city && typeof city !== 'string') {
-        return res.status(400).json({ message: 'Invalid city format' });
-      }
-      if (district && typeof district !== 'string') {
-        return res.status(400).json({ message: 'Invalid district format' });
-      }
-      if (plan && typeof plan !== 'string') {
-        return res.status(400).json({ message: 'Invalid plan format' });
-      }
-      if (active && typeof active !== 'boolean') {
-        return res.status(400).json({ message: 'Invalid active format' });
-      }
-      if (postalCode && typeof postalCode !== 'string') {
-        return res.status(400).json({ message: 'Invalid postalCode format' });
-      }
-      if (countryCode) {
-        const countryCodeRegex = /^[A-Z]{2}$/; // Dos letras mayúsculas
-        if (typeof countryCode !== 'string' || !countryCodeRegex.test(countryCode)) {
-          return res.status(400).json({ message: 'Invalid countryCode format' });
-        }
-      }
-
-      // Actualizar los campos
-      clinic.name = name || clinic.name;
-      clinic.city = city || clinic.city;
-      clinic.district = district || clinic.district;
-      clinic.plan = plan || clinic.plan;
-      clinic.active = active || clinic.active;
-      clinic.postalCode = postalCode || clinic.postalCode;
-      clinic.countryCode = countryCode || clinic.countryCode;
-
-      // Usar Circuit Breaker para guardar la clínica
-      await circuitBreaker.fire(() => clinic.save());
-
-      logger.info(`Clinic ${clinic._id} updated successfully`, {
+    const clinic = await Clinic.findById(id);
+    if (!clinic) {
+      logger.error('Clinic not found', {
         method: req.method,
         url: req.originalUrl,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null,
       });
-
-      res.status(200).json(clinic);
-    } catch (error) {
-      logger.error('Error updating clinic', {
-        method: req.method,
-        url: req.originalUrl,
-        error: error.message,
-      });
-      res.status(400).json({ message: error.message });
+      return res.status(404).json({ message: 'Clinic not found' });
     }
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const obtainAllClinics = async (req, res) => {
-  try {
-    // Usar Circuit Breaker para obtener todas las clínicas
-    const clinics = await circuitBreaker.fire(() => Clinic.find());
-
-    logger.info('Retrieved all clinics', {
+    logger.debug(`Clinic ${clinic._id} retrieved`, {
       method: req.method,
       url: req.originalUrl,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
     });
-
-    res.status(200).json(clinics);
+    res.status(200).json(clinic);
   } catch (error) {
-    logger.error('Error fetching clinics', {
+    logger.error('Error retrieving clinic', {
       method: req.method,
       url: req.originalUrl,
-      error: error.message,
+      error: error,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
     });
     res.status(500).json({ message: error.message });
   }
 };
 
+export const updateClinic = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateFields = req.body;
+
+    if (!id) {
+      logger.error('Missing clinic ID', {
+        method: req.method,
+        url: req.originalUrl,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null,
+      });
+      return res.status(400).json({ message: 'Missing clinic ID' });
+    }
+
+    const updatedClinic = await Clinic.findByIdAndUpdate(id, updateFields, { new: true });
+    if (!updatedClinic) {
+      logger.error('Clinic not found', {
+        method: req.method,
+        url: req.originalUrl,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null,
+      });
+      return res.status(404).json({ message: 'Clinic not found' });
+    }
+    logger.info(`Clinic ${updatedClinic._id} updated`, {
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
+      clinicId: updatedClinic._id,
+    });
+    res.status(200).json(updatedClinic);
+  } catch (error) {
+    logger.error('Error updating clinic', {
+      method: req.method,
+      url: req.originalUrl,
+      error: error,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null
+    });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const obtainAllClinics = async (req, res) => {
+  try {
+    const clinics = await Clinic.find();
+    logger.debug(`Retrieved ${clinics.length} clinics`, {
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
+    });
+    res.status(200).json(clinics);
+  } catch (error) {
+    logger.error('Error fetching clinics', {
+      method: req.method,
+      url: req.originalUrl,
+      error: error,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
+    });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 export const deleteClinic = async (req, res) => {
   try {
     const { id } = req.params;
 
-    try {
-      // Usar Circuit Breaker para eliminar la clínica
-      const clinic = await circuitBreaker.fire(() => Clinic.findById(id));
-
-      if (!clinic) {
-        return res.status(404).json({ message: 'Clinic not found' });
-      }
-
-      await circuitBreaker.fire(() => clinic.deleteOne());
-      logger.info(`Clinic ${clinic._id} deleted`);
-      res.status(204).json({ message: 'Clinic deleted' });
-    } catch (error) {
-      logger.error('Error deleting clinic', {
+    if (!id) {
+      logger.error('Missing clinic ID', {
         method: req.method,
         url: req.originalUrl,
-        error: error.message,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null,
       });
-
-      res.status(500).json({ message: error.message });
+      return res.status(400).json({ message: 'Missing clinic ID' });
     }
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
 
-export const deactivateClinic = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    try {
-      // Usar Circuit Breaker para encontrar la clínica
-      const clinic = await circuitBreaker.fire(() => Clinic.findById(id));
-
-      if (!clinic) {
-        logger.error('Clinic not found', {
-          method: req.method,
-          url: req.originalUrl,
-          patientId: id,
-        });
-        return res.status(404).json({ message: 'Clinic not found' });
-      }
-
-      // Desactivar la clínica
-      clinic.active = false;
-
-      // Usar Circuit Breaker para guardar los cambios
-      await circuitBreaker.fire(() => clinic.save());
-
-      logger.info(`Clinic ${clinic._id} deactivated successfully`, {
+    const clinic = await Clinic.findByIdAndDelete(id);
+    if (!clinic) {
+      logger.error('Clinic not found', {
         method: req.method,
         url: req.originalUrl,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null,
       });
-
-      res.status(200).json(clinic);
-    } catch (error) {
-      logger.error('Error deactivating clinic', {
-        method: req.method,
-        url: req.originalUrl,
-        error: error.message,
-      });
-      res.status(400).json({ message: error.message });
+      return res.status(404).json({ message: 'Clinic not found' });
     }
+    logger.info(`Clinic ${clinic._id} deleted`, {
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
+      clinicId: clinic._id,
+    });
+    res.status(200).json(clinic);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    logger.error('Error deleting clinic', {
+      method: req.method,
+      url: req.originalUrl,
+      error: error,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null
+    });
+    res.status(500).json({ message: error.message });
   }
 };

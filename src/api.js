@@ -3,8 +3,9 @@ import cors from 'cors';
 import swaggerUI from 'swagger-ui-express';
 import YAML from 'yamljs';
 import cookieParser from 'cookie-parser';
-import router from './routes/paymentRoute.js';
-import plans from './routes/planRoute.js';
+import paymentRoute from './routes/paymentRoute.js';
+import plansRoute from './routes/planRoute.js';
+import clinicRoute from './routes/clinicRoute.js';
 
 const swaggerDocument = YAML.load('./openapi.yaml');
 
@@ -16,8 +17,9 @@ export default function () {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
-  app.use('/',router);
-  app.use('/',plans);
+  app.use(`${process.env.API_PREFIX || ''}/payments` ,paymentRoute);
+  app.use(`${process.env.API_PREFIX || ''}/plans`, plansRoute);
+  app.use(`${process.env.API_PREFIX || ''}/clinics`, clinicRoute);
   app.get('/', (req, res) => {
     res.send('API funcionando correctamente');
   });
