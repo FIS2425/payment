@@ -1,9 +1,7 @@
 import Payment from '../schemas/Payment.js';
 import logger from '../config/logger.js';
-import dotenv from 'dotenv';
 import Plan from '../schemas/Plan.js';
 import Stripe from 'stripe';
-dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const processPayment = async (req, res) => {
