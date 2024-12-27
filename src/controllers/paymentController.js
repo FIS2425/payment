@@ -1,6 +1,8 @@
 import Payment from '../schemas/Payment.js';
 import logger from '../config/logger.js';
 import Plan from '../schemas/Plan.js';
+import dotenv from 'dotenv';
+dotenv.config();
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
