@@ -21,29 +21,14 @@ spec:
         io.kompose.service: payment-svc
     spec:
       containers:
-        - env:
+        - name: payment-svc
+          image: ghcr.io/fis2425/payment:v1.1.0
+          ports:
+            - containerPort: 3003
+              protocol: TCP
+          env:
             - name: API_PREFIX
               value: /api/v1
-            - name: AZURE_ACCOUNT_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: payment-secrets
-                  key: AZURE_ACCOUNT_NAME
-            - name: AZURE_ANALYTICS_CONTAINER_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: payment-secrets
-                  key: AZURE_ANALYTICS_CONTAINER_NAME
-            - name: AZURE_IMAGES_CONTAINER_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: payment-secrets
-                  key: AZURE_IMAGES_CONTAINER_NAME
-            - name: AZURE_SAS_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: payment-secrets
-                  key: AZURE_SAS_TOKEN
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -54,6 +39,11 @@ spec:
                 secretKeyRef:
                   name: payment-secrets
                   key: KAFKA_HOST
+            - name: MONGOPASS
+              valueFrom:
+                secretKeyRef:
+                  name: payment-secrets
+                  key: MONGOPASS
             - name: MONGOURL
               valueFrom:
                 secretKeyRef:
@@ -76,9 +66,7 @@ spec:
                 secretKeyRef:
                   name: payment-secrets
                   key: STRIPE_API_KEY
-          image: ghcr.io/fis2425/payment-svc:latest
-          name: payment-svc
-          ports:
-            - containerPort: 3003
-              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: ghcr-secret
       restartPolicy: Always
