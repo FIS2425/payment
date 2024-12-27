@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import Plan from '../src/schemas/Plan.js';
 
-dotenv.config();
 
 const MONGO_URI = process.env.MONGOURL;
 

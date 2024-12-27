@@ -1,8 +1,5 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import Clinic from '../src/schemas/Clinic.js'; // Ajusta la ruta si es necesario
-
-dotenv.config();
 
 const MONGO_URI = process.env.MONGOURL;
 
