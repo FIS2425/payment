@@ -2,17 +2,14 @@ import logger from '../config/logger.js';
 import Plan from '../schemas/Plan.js';
 
 export const obtainAllPlans = async (req, res) => {
-  logger.info('Request received to obtain all plans', {
-    method: req.method,
-    url: req.originalUrl,
-  });
-
   try {
     const plans = await Plan.find();
-    logger.info('Plans fetched successfully', {
+    
+    logger.debug(`Retrieved ${plans.length} plans`, {
       method: req.method,
       url: req.originalUrl,
-      plansCount: plans.length,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
     });
     res.status(200).json(plans);
 
@@ -20,8 +17,11 @@ export const obtainAllPlans = async (req, res) => {
     logger.error('Error fetching plans', {
       method: req.method,
       url: req.originalUrl,
-      error: error.message,
+      error: error,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
     });
+
     res.status(500).json({ message: error.message });
   }
 }

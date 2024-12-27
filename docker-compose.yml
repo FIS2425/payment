@@ -23,14 +23,16 @@ services:
       - MONGODB_URL=${MONGOURL}
       - STRIPE_API_KEY=${STRIPE_API_KEY}
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - PORT = 3003
+      - API_VERSION = ${API_VERSION}
+      - FRONTEND_URL = ${FRONTEND_URL}
+      - NODE_ENV = ${NODE_ENV}
     depends_on:
       - mongodb
     networks:
       - backend
     ports:
       - "3003:3003"
-    volumes:
-    - .:/payment-svc
 
 volumes:
   mongo-data:
