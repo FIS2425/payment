@@ -91,7 +91,7 @@ describe('test GET getclinicById/:id', () => {
     });
     await newClinic.save();
 
-    const response = await request.get(`/getclinicById/b4e3e2a2-1f94-4ecf-a04e-568e4d82d1fa`);
+    const response = await request.get('/getclinicById/b4e3e2a2-1f94-4ecf-a04e-568e4d82d1fa');
     expect(response.status).toBe(200);
     expect(response.body.name).toBe(newClinic.name);
   }); 
@@ -114,7 +114,7 @@ describe('test GET getPaymentById/:id', () => {
     });
     await newPayment.save();
 
-    const response = await request.get(`/getPaymentById/b4e3e2a2-1f94-4ecf-a04e-568e4d82d1fa`);
+    const response = await request.get('/getPaymentById/b4e3e2a2-1f94-4ecf-a04e-568e4d82d1fa');
     expect(response.status).toBe(200);
     expect(response.body.name).toBe(newPayment.name);
   }); 

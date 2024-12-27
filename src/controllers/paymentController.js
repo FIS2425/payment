@@ -8,20 +8,37 @@ export const processPayment = async (req, res) => {
   const { planId, clinicId } = req.body;
 
   if (!planId || !clinicId) {
+    logger.error('Missing plan ID or clinic ID', {
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null
+    });
     return res.status(400).send({ error: 'Plan ID and Clinic ID are required' });
   }
 
   try {
     const plan = await Plan.findById(planId);
     if (!plan) {
+      logger.error('Plan not found', {
+        method: req.method,
+        url: req.originalUrl,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null
+      });
       return res.status(404).send({ error: 'Plan not found' });
     }
 
     if (typeof plan.price !== 'number') {
+      logger.error('Invalid plan price', {
+        method: req.method,
+        url: req.originalUrl,
+        ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+        requestId: req.headers && req.headers['x-request-id'] || null
+      });
       return res.status(400).send({ error: 'Invalid plan price' });
     }
 
-    // Crear la sesión de Stripe Checkout
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -42,8 +59,23 @@ export const processPayment = async (req, res) => {
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
     });
 
+    logger.info('Payment session created', {
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null,
+      sessionId: session.id,
+    });
+
     res.status(200).send({ url: session.url });
   } catch (error) {
+    logger.error('Error processing payment', {
+      method: req.method,
+      url: req.originalUrl,
+      error: error,
+      ip: req.headers && req.headers['x-forwarded-for'] || req.ip,
+      requestId: req.headers && req.headers['x-request-id'] || null
+    });
     console.error('Stripe Error:', error.message || error);
     res.status(500).send({ error: 'Internal Server Error' });
   }
