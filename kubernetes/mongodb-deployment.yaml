@@ -27,12 +27,12 @@ spec:
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: auth-secrets
+                  name: payment-secrets
                   key: MONGOPASS
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: auth-secrets
+                  name: payment-secrets
                   key: MONGOADMIN
           image: mongo:latest
           name: mongodb-payment
@@ -41,9 +41,9 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /data/db
-              name: mongo-data-payment
+              name: mongo-payment
       restartPolicy: Always
       volumes:
-        - name: mongo-data-payment
+        - name: mongo-payment
           persistentVolumeClaim:
-            claimName: mongo-data-payment
+            claimName: mongo-payment
