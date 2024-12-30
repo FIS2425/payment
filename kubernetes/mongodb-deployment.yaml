@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: C:\Users\maria\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -o kubernetes/
-    kompose.version: 1.35.0 (9532ceef3)
+    kompose.cmd: kompose convert -o kubernetes/
+    kompose.version: 1.34.0 (cbf2835db)
   labels:
     io.kompose.service: mongodb
   name: mongodb
@@ -17,15 +17,23 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: C:\Users\maria\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -o kubernetes/
-        kompose.version: 1.35.0 (9532ceef3)
+        kompose.cmd: kompose convert -o kubernetes/
+        kompose.version: 1.34.0 (cbf2835db)
       labels:
         io.kompose.service: mongodb
     spec:
       containers:
         - env:
             - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: payment-secrets
+                  key: MONGOPASS
             - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: payment-secrets
+                  key: MONGOADMIN
           image: mongo:latest
           name: mongodb-payment
           ports:
@@ -33,9 +41,9 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /data/db
-              name: mongo-data
+              name: mongo-payment
       restartPolicy: Always
       volumes:
-        - name: mongo-data
+        - name: mongo-payment
           persistentVolumeClaim:
-            claimName: mongo-data
+            claimName: mongo-payment
