@@ -17,15 +17,25 @@ const connectToDatabase = async () => {
 // Datos de ejemplo para las clínicas
 const sampleClinics = [
   {
-    name: 'Clinic Two',
-    city: 'City Two',
-    district: 'District Two',
-    plan: 'Plan Two',
-    postalCode:'18015',
-    countryCode: 'US',
+    _id: '27163ac7-4f4d-4669-a0c1-4b8538405475',
+    name: 'Clínica Plaza del Duque',
+    city: 'Sevilla',
+    district: 'Distrito Centro',
+    plan: 'Plan Uno',
+    postalCode: '41001',
+    countryCode: 'ES',
     active: true,
   },
-  // Agrega más clínicas si es necesario
+  {
+    _id: '5b431574-d2ab-41d3-b1dd-84b06f2bd1a0',
+    name: 'Clínica Distrito Nervión',
+    city: 'Sevilla',
+    district: 'Distrito Nervión',
+    plan: 'Plan Dos',
+    postalCode: '41018',
+    countryCode: 'ES',
+    active: true,
+  }
 ];
 
 async function populateClinics() {
