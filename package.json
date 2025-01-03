@@ -55,7 +55,7 @@
     "install": "0.13.0",
     "jsonwebtoken": "9.0.2",
     "kafka-node": "5.0.0",
-    "mongoose": "8.9.2",
+    "mongoose": "8.9.3",
     "npm": "10.9.0",
     "opossum": "8.4.0",
     "stripe": "17.5.0",
