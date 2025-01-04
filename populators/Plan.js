@@ -17,6 +17,7 @@ const connectToDatabase = async () => {
 
 const samplePlans = [
   {
+    _id: '550e8400-e29b-41d4-a716-446655440000',
     name: 'Basic',
     price: 15,
     features: [
@@ -27,6 +28,7 @@ const samplePlans = [
       'Clinical History Format: PDF',
     ],
   }, {
+    _id: '123e4567-e89b-12d3-a456-426614174000',
     name: 'Advanced',
     price: 30,
     features: [
@@ -37,6 +39,7 @@ const samplePlans = [
       'Clinical History Format: CSV, XML, JSON',
     ],
   }, {
+    _id: '9f1b5d7a-2c44-481d-94a5-7b3725036df1',
     name: 'Professional',
     price: 45,
     features: [
@@ -47,6 +50,7 @@ const samplePlans = [
       'Clinical History Format: DICOM, HL7, FHIR',
     ],
   }, {
+    _id: 'c0a80123-16d2-4d7f-8cae-9fd6a07e7f20',
     name: 'Enterprise',
     price: 100,
     features: [

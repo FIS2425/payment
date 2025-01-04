@@ -15,6 +15,7 @@ API for managing clinics, plans, and payments.
 | GET | [/obtainAllClinics](#getobtainallclinics) | Retrieve all clinics |
 | GET | [/obtainAllPayments](#getobtainallpayments) | Retrieve all payments |
 | GET | [/obtainAllPlans](#getobtainallplans) | Retrieve all plans |
+| GET | [/obtainPlanById/{id}](#getobtainplanbyidid) | Retrieve a plan by ID |
 | POST | [/payment](#postpayment) | Process a payment |
 | POST | [/registerClinic](#postregisterclinic) | Register a new clinic |
 | POST | [/registerPayment](#postregisterpayment) | Register a new payment |
@@ -229,6 +230,43 @@ Returns a list of all registered plans.
   features?: string[]
 }[]
 ```
+
+***
+
+### [GET]/obtainPlanById/{id}
+
+- Summary  
+Retrieve a plan by ID
+
+- Description  
+Retrieves details of a specific plan by its unique ID.
+
+#### Parameters
+
+- path  
+  - name: id
+    in: path
+    required: true
+    description: Unique identifier for the plan
+    schema:
+      type: string
+
+#### Responses
+
+- 200 Plan successfully retrieved
+
+`application/json`
+
+```json
+{
+  "_id": "string",
+  "name": "string",
+  "price": 0,
+  "features": ["string"]
+}
+
+- 404 Plan not found
+- 400 Missing plan ID
 
 ***
 
