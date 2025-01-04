@@ -49,6 +49,6 @@ const verifyAuth = (requiredRoles) => (req, res, next) => {
   }
 };
   
-export const paymentPermissions = verifyAuth(['clinicadmin']);
-export const clinicPermissions = verifyAuth(['admin']);
+export const paymentPermissions = verifyAuth(['clinicadmin','admin']);
+export const clinicPermissions = verifyAuth(['clinicadmin','admin']);
   
