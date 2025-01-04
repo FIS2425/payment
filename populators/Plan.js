@@ -18,7 +18,7 @@ const connectToDatabase = async () => {
 const samplePlans = [
   {
     name: 'Basic',
-    price: 0,
+    price: 15,
     features: [
       '1 clinic',
       'Max File Size: 0.5 GB',
@@ -28,7 +28,7 @@ const samplePlans = [
     ],
   }, {
     name: 'Advanced',
-    price: 5,
+    price: 30,
     features: [
       '3 clinics',
       'Max File Size: 1 GB',
@@ -38,7 +38,7 @@ const samplePlans = [
     ],
   }, {
     name: 'Professional',
-    price: 10,
+    price: 45,
     features: [
       '6 clinics',
       'Max File Size: 10 GB',
@@ -48,7 +48,7 @@ const samplePlans = [
     ],
   }, {
     name: 'Enterprise',
-    price: 1000,
+    price: 100,
     features: [
       'Unlimited clinics',
       'Unlimited File Size',

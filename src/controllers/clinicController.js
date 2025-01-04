@@ -210,7 +210,7 @@ export const deleteClinic = async (req, res) => {
       requestId: req.headers && req.headers['x-request-id'] || null,
       clinicId: clinic._id,
     });
-    res.status(200).json(clinic);
+    res.status(204).json(clinic);
   } catch (error) {
     logger.error('Error deleting clinic', {
       method: req.method,
