@@ -10,7 +10,7 @@ env:
   STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
   STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
   
-jobs:
+git push --force-with-lease origin RAMAjobs:
   test:
     runs-on: ubuntu-latest
 
