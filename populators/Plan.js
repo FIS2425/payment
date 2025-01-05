@@ -64,7 +64,7 @@ const samplePlans = [
 
   const removeAllPlans = async () => {
     try {
-      await Plans.deleteMany({});
+      await Plan.deleteMany({});
       console.log('All Plans have been removed');
     } catch (error) {
       console.error('Error removing Plans:', error);
