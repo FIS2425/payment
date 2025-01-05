@@ -136,10 +136,7 @@ export const registerPayment = async (req, res) => {
 
 export const obtainAllPayments = async (req, res) => {
   try {
-
-    // Usar Circuit Breaker para obtener todos los pagos
     const payments = await circuitBreaker.fire(() => Payment.find());
-
     logger.info('Retrieved all payments', {
       method: req.method,
       url: req.originalUrl,
@@ -150,6 +147,34 @@ export const obtainAllPayments = async (req, res) => {
     logger.error('Error fetching payments', {
       method: req.method,
       url: req.originalUrl,
+      error: error.message,
+    });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllPaymentsByClinicId = async (req, res) => {
+  const { clinicId } = req.params;
+
+  try {
+    if (!clinicId) {
+      return res.status(400).json({ message: 'Clinic ID is required' });
+    }
+    const payments = await circuitBreaker.fire(() => 
+      Payment.find({ clinicId })
+    );
+    logger.info('Retrieved payments by clinic ID', {
+      method: req.method,
+      url: req.originalUrl,
+      clinicId,
+    });
+
+    res.status(200).json(payments);
+  } catch (error) {
+    logger.error('Error fetching payments by clinic ID', {
+      method: req.method,
+      url: req.originalUrl,
+      clinicId,
       error: error.message,
     });
     res.status(500).json({ message: error.message });
