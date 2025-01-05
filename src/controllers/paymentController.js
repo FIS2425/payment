@@ -8,6 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const processPayment = async (req, res) => {
   const { planId, clinicId } = req.body;
+  const newPayment = new Payment({clinicId, planId });
 
   if (!planId || !clinicId) {
     logger.error('Missing plan ID or clinic ID', {
@@ -60,7 +61,7 @@ export const processPayment = async (req, res) => {
       success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`, 
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
     });
-
+    newPayment.save();
     logger.info('Payment session created', {
       method: req.method,
       url: req.originalUrl,
