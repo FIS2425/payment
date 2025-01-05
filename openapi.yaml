@@ -40,6 +40,57 @@ paths:
                       features:
                         - "Feature A"
                         - "Feature B"
+  /plans/{id}:
+    get:
+      tags:
+        - Plan
+      summary: Retrieve a plan by ID
+      description: Retrieves details of a specific plan by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier for the plan
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Plan successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+        '400':
+          description: Missing plan ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Missing plan ID
+        '404':
+          description: Plan not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Plan not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An unexpected error occurred
+
   /payments:
     get:
       tags:
