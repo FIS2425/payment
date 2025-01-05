@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+env:
+  VITE_JWT_SECRET: ${{ secrets.VITE_JWT_SECRET }}
+  STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+  STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+  
 jobs:
   test:
     runs-on: ubuntu-latest
