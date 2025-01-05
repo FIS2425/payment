@@ -38,6 +38,15 @@ const sampleClinics = [
   }
 ];
 
+const removeAllClinics = async () => {
+  try {
+    await Clinic.deleteMany({});
+    console.log('All Clinic  have been removed');
+  } catch (error) {
+    console.error('Error removing Clinic:', error);
+  }
+};
+
 async function populateClinics() {
   try {
     // Guardar cada clínica
@@ -58,5 +67,6 @@ async function populateClinics() {
 // Ejecutar el script
 (async () => {
   await connectToDatabase();
+  await removeAllClinics();
   await populateClinics();
 })();

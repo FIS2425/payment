@@ -8,6 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const processPayment = async (req, res) => {
   const { planId, clinicId } = req.body;
+  const newPayment = new Payment({clinicId, planId });
 
   if (!planId || !clinicId) {
     logger.error('Missing plan ID or clinic ID', {
@@ -60,7 +61,7 @@ export const processPayment = async (req, res) => {
       success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`, 
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
     });
-
+    newPayment.save();
     logger.info('Payment session created', {
       method: req.method,
       url: req.originalUrl,
@@ -136,10 +137,7 @@ export const registerPayment = async (req, res) => {
 
 export const obtainAllPayments = async (req, res) => {
   try {
-
-    // Usar Circuit Breaker para obtener todos los pagos
     const payments = await circuitBreaker.fire(() => Payment.find());
-
     logger.info('Retrieved all payments', {
       method: req.method,
       url: req.originalUrl,
@@ -150,6 +148,34 @@ export const obtainAllPayments = async (req, res) => {
     logger.error('Error fetching payments', {
       method: req.method,
       url: req.originalUrl,
+      error: error.message,
+    });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllPaymentsByClinicId = async (req, res) => {
+  const { clinicId } = req.params;
+
+  try {
+    if (!clinicId) {
+      return res.status(400).json({ message: 'Clinic ID is required' });
+    }
+    const payments = await circuitBreaker.fire(() => 
+      Payment.find({ clinicId })
+    );
+    logger.info('Retrieved payments by clinic ID', {
+      method: req.method,
+      url: req.originalUrl,
+      clinicId,
+    });
+
+    res.status(200).json(payments);
+  } catch (error) {
+    logger.error('Error fetching payments by clinic ID', {
+      method: req.method,
+      url: req.originalUrl,
+      clinicId,
       error: error.message,
     });
     res.status(500).json({ message: error.message });
