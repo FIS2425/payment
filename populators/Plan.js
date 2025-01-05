@@ -62,9 +62,17 @@ const samplePlans = [
     ],
   }];
 
+  const removeAllPlans = async () => {
+    try {
+      await Plans.deleteMany({});
+      console.log('All Plans have been removed');
+    } catch (error) {
+      console.error('Error removing Plans:', error);
+    }
+  };
+
 async function populatePlans() {
   try {
-    // Guardar cada plan
     for (const planData of samplePlans) {
       const plan = new Plan(planData);
       await plan.save();
@@ -82,5 +90,6 @@ async function populatePlans() {
 // Ejecutar el script
 (async () => {
   await connectToDatabase();
+  await removeAllPlans();
   await populatePlans();
 })();
