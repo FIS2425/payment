@@ -205,3 +205,31 @@ describe('test PUT clinics/:id', () => {
     expect(response.body.city).toBe(updatedData.city);
   });
 });
+
+describe('test GET plans/:id', () => {
+  it('should return 404 if plan is not found', async () => {
+    const response = await request.get(`/plans/${uuidv4()}`);
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('plan not found');
+  });
+
+  it('should return 200 and the Clinic if found', async () => {
+    const newPlan = new Plan( {
+      _id: '550e8400-e29b-41d4-a716-446655440000',
+      name: 'Basic',
+      price: 15,
+      features: [
+        '1 clinic',
+        'Max File Size: 0.5 GB',
+        '2 doctors per clinic',
+        '350 patients per clinic',
+        'Clinical History Format: PDF',
+      ],
+    });
+    await newPlan.save();
+
+    const response = await request.get('/plans/550e8400-e29b-41d4-a716-446655440000');
+    expect(response.status).toBe(200);
+    expect(response.body.name).toBe(newPlan.name);
+  }); 
+});
